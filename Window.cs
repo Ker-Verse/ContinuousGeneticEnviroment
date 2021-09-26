@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using SFML.Window;
 using SFML.Graphics;
 using SFML.System;
 
 namespace ContinuousGeneticEnviroment
 {
+
+
     class Window
     {
         //Initialization values
         private const int WIDTH = 1280;
         private const int HEIGHT = 720;
-        private const string TITLE = "HelloGraphics";
+        private const string TITLE = "Ecosystem";
         private const int FPS = 60;
         private RenderWindow window;
         
@@ -35,7 +36,7 @@ namespace ContinuousGeneticEnviroment
         public float ReproductionRate = 41.2f;
         public float FoodSpawnRate = 20f;
         public float mutationRate = 10f;
-        public float WanderStrength = .1f;
+        public float WanderStrength = .2f;
         public List<Food> Foods = new List<Food>();
 
 
