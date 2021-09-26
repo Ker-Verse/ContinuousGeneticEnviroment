@@ -18,7 +18,6 @@ namespace ContinuousGeneticEnviroment
         }
         public void Show(RenderTarget target,RenderStates state)
         {
-            
             target.Draw(shape);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,15 +17,16 @@ namespace ContinuousGeneticEnviroment
         public float Size;
         public float Speed;
         public float Health = 250;
-        public float maxHealth = 250;
+        public float maxHealth;
         public bool Alive = true;
 
 
         public float wanderStrength;
-        Font font = new Font(@"C:\Users\KK\source\repos\ContinuousGeneticEnviroment\Font\GOTHIC.TTF");
-
-        public Blob()
+        Font font;
+        
+        public Blob(Font fon)
         {
+            font = fon;
             var R = (byte)new Random().Next(100,255);
             var G = (byte)new Random().Next(100,255);
             var B = (byte)new Random().Next(100,255);
@@ -33,15 +35,17 @@ namespace ContinuousGeneticEnviroment
             double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
             Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
             acceleration = randomVector;
-            Size = new Random().Next(5,50);
+            Size = new Random().Next(20,60);
             Health = new Random().Next(100, 500);
             Speed = 1 / Size * 10;
+            maxHealth = Size / 2 * Size/(float)Math.Log10(Size);
             shape.Radius = Size;
             shape.Position = InitialPosition;
             shape.Origin = new Vector2f(shape.Radius / 2, shape.Radius / 2);
         }
-        public Blob(float size,Color color,float wanderstrength)
+        public Blob(float size,Color color,float wanderstrength,Font fon)
         {
+            font = fon;
             wanderStrength = wanderstrength;
             shape.FillColor = color;
             double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
@@ -51,6 +55,7 @@ namespace ContinuousGeneticEnviroment
             Health = new Random().Next(100, 500);
             Speed = 1 / Size * 10;
             shape.Radius = Size;
+            maxHealth = Size / 2 * Size;
             shape.Position = InitialPosition;
             shape.Origin = new Vector2f(shape.Radius / 2, shape.Radius / 2);
         }
@@ -65,12 +70,16 @@ namespace ContinuousGeneticEnviroment
                 velocity = new Vector2f(velocity.X, -velocity.Y);
             }
         }
-        public void Draw(RenderTarget target, RenderStates states)
+        public void Draw(RenderWindow win, RenderTarget target, RenderStates states)
         {
-            string statusText = "Health :" + Health+ "\n MaxHealth :"+maxHealth+"\nWander :"+wanderStrength;
-            Text Status = new Text(statusText,font,10);
-            Status.Position = shape.Position;
-            Status.Draw(target,states);
+            var point = target.MapPixelToCoords(Mouse.GetPosition(win));
+            if (shape.GetGlobalBounds().Contains(point.X,point.Y))
+            {
+                string statusText = "Health :" + Health + "\nMaxHealth :" + maxHealth + "\nSize :" + Size;
+                Text Status = new Text(statusText, font, 10);
+                Status.Position = shape.Position;
+                Status.Draw(target, states);
+            }
             target.Draw(shape, states);
         }
         public void Update(RenderTarget target, RenderStates states)
@@ -90,7 +99,7 @@ namespace ContinuousGeneticEnviroment
             if (Health > maxHealth)
             {
                 Health = maxHealth;
-                maxHealth++;
+                maxHealth+=maxHealth;
             }
             Health--;
         }

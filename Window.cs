@@ -31,14 +31,15 @@ namespace ContinuousGeneticEnviroment
 
         //Entities And Entity Variables
         List<Blob> Blobs = new List<Blob>();
-        public int foodCount = 500;
-        public int InitialCount = 20;
+        public int foodCount = 100;
+        public int InitialCount = 10;
         public float ReproductionRate = 41.2f;
         public float FoodSpawnRate = 20f;
         public float mutationRate = 20f;
         public List<Food> Foods = new List<Food>();
 
-
+        Text fpsText = new Text();
+        Font DefaultFont = new Font(@"C:\Users\KK\source\repos\ContinuousGeneticEnviroment\Font\GOTHIC.TTF");
 
         //System variables
         float fpsAvg = 60;
@@ -46,7 +47,7 @@ namespace ContinuousGeneticEnviroment
         {
             for (int i = 0; i < InitialCount; i++)
             {
-                Blobs.Add(new Blob());
+                Blobs.Add(new Blob(DefaultFont));
             }
             
             //Window Initialization
@@ -57,8 +58,27 @@ namespace ContinuousGeneticEnviroment
                 Foods.Add(new Food(rand));
             }
             window.SetFramerateLimit(FPS);
+            window.KeyPressed += Window_KeyPressed;
             window.Closed += (sender, args) => { this.window.Close(); };
             run();
+        }
+
+        private void Window_KeyPressed(object sender, KeyEventArgs e)
+        {
+            if (e.Code == Keyboard.Key.R)
+            {
+                Blobs.Clear();
+                for (int i = 0; i < InitialCount; i++)
+                {
+                    Blobs.Add(new Blob(DefaultFont));
+                }
+                Foods.Clear();
+                for (int i = 0; i < foodCount; i++)
+                {
+                    Vector2f rand = new Vector2f((float)new Random().NextDouble()*window.Size.X, (float)new Random().NextDouble() * window.Size.Y);
+                    Foods.Add(new Food(rand));
+                }
+            }
         }
 
         public void run()
@@ -93,10 +113,10 @@ namespace ContinuousGeneticEnviroment
                                 Blobs[i].Health += 50;
                                 if (new Random().NextDouble() < ReproductionRate / 100)
                                 {
-                                    Blob newBorn = new Blob(Blobs[i].Size, Blobs[i].shape.FillColor,Blobs[i].wanderStrength);
+                                    Blob newBorn = new Blob(Blobs[i].Size, Blobs[i].shape.FillColor,Blobs[i].wanderStrength,DefaultFont);
                                     if (new Random().NextDouble() < mutationRate / 100)
                                     {
-                                        newBorn = new Blob();
+                                        newBorn = new Blob(DefaultFont);
                                     }
                                     newBorn.shape.Position = Blobs[i].shape.Position;
                                     newBorn.Speed = 1 / newBorn.Size * 50;
@@ -121,7 +141,7 @@ namespace ContinuousGeneticEnviroment
             this.window.Clear(Color.Black);
             foreach (var blob in Blobs)
             {
-                blob.Draw(window, RenderStates.Default);
+                blob.Draw(window,window, RenderStates.Default);
             }
             for (int i = 0; i < Foods.Count; i++)
             {
@@ -130,7 +150,7 @@ namespace ContinuousGeneticEnviroment
             this.window.Display();
         }
         private void handleEvents()
-        {
+        { 
             this.window.DispatchEvents();
         }
         private void CountFPS()
