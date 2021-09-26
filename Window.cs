@@ -32,7 +32,7 @@ namespace ContinuousGeneticEnviroment
         //Entities And Entity Variables
         List<Blob> Blobs = new List<Blob>();
         public int foodCount = 500;
-        public int InitialCount = 200;
+        public int InitialCount = 20;
         public float ReproductionRate = 41.2f;
         public float FoodSpawnRate = 20f;
         public float mutationRate = 20f;

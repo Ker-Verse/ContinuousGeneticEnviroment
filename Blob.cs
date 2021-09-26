@@ -16,11 +16,13 @@ namespace ContinuousGeneticEnviroment
         public float Size;
         public float Speed;
         public float Health = 250;
+        public float maxHealth = 250;
         public bool Alive = true;
 
 
         public float wanderStrength;
-        
+        Font font = new Font(@"C:\Users\KK\source\repos\ContinuousGeneticEnviroment\Font\GOTHIC.TTF");
+
         public Blob()
         {
             var R = (byte)new Random().Next(100,255);
@@ -36,6 +38,7 @@ namespace ContinuousGeneticEnviroment
             Speed = 1 / Size * 10;
             shape.Radius = Size;
             shape.Position = InitialPosition;
+            shape.Origin = new Vector2f(shape.Radius / 2, shape.Radius / 2);
         }
         public Blob(float size,Color color,float wanderstrength)
         {
@@ -49,6 +52,7 @@ namespace ContinuousGeneticEnviroment
             Speed = 1 / Size * 10;
             shape.Radius = Size;
             shape.Position = InitialPosition;
+            shape.Origin = new Vector2f(shape.Radius / 2, shape.Radius / 2);
         }
         void CheckBoundCollision(RenderTarget target, RenderStates states)
         {
@@ -63,6 +67,10 @@ namespace ContinuousGeneticEnviroment
         }
         public void Draw(RenderTarget target, RenderStates states)
         {
+            string statusText = "Health :" + Health+ "\n MaxHealth :"+maxHealth+"\nWander :"+wanderStrength;
+            Text Status = new Text(statusText,font,10);
+            Status.Position = shape.Position;
+            Status.Draw(target,states);
             target.Draw(shape, states);
         }
         public void Update(RenderTarget target, RenderStates states)
@@ -79,6 +87,11 @@ namespace ContinuousGeneticEnviroment
             velocity = new Vector2f(Math.Clamp(velocity.X, -Speed, Speed), Math.Clamp(velocity.Y, -Speed, Speed));
             shape.Position += velocity;
             acceleration *= 0;
+            if (Health > maxHealth)
+            {
+                Health = maxHealth;
+                maxHealth++;
+            }
             Health--;
         }
         public void ApplyForce(Vector2f force)
