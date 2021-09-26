@@ -72,7 +72,7 @@ namespace ContinuousGeneticEnviroment
         }
         private void update()
         {
-            for (int s = 0; s < 3; s++)
+            for (int s = 0; s < 1; s++)
             {
                 if (new Random().NextDouble() < FoodSpawnRate / 100)
                 {
