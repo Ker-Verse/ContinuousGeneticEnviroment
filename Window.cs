@@ -72,49 +72,51 @@ namespace ContinuousGeneticEnviroment
         }
         private void update()
         {
-            if (new Random().NextDouble() < FoodSpawnRate / 100)
+            for (int s = 0; s < 3; s++)
             {
-                Vector2f rand = new Vector2f(new Random().Next(0, (int)window.Size.X), new Random().Next(0, (int)window.Size.Y));
-                Foods.Add(new Food(rand));
-            }
-            for (int i = 0; i < Blobs.Count; i++)
-            {
-                if (new Random().NextDouble() < WanderStrength)
+                if (new Random().NextDouble() < FoodSpawnRate / 100)
                 {
-                    double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
-                    Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
-                    Blobs[i].acceleration = randomVector;
+                    Vector2f rand = new Vector2f(new Random().Next(0, (int)window.Size.X), new Random().Next(0, (int)window.Size.Y));
+                    Foods.Add(new Food(rand));
                 }
-                if (Blobs[i].Health > 0)
+                for (int i = 0; i < Blobs.Count; i++)
                 {
-                    Blobs[i].Update(window, RenderStates.Default);
-                    for (int f = 0; f < Foods.Count; f++)
+                    if (new Random().NextDouble() < WanderStrength)
                     {
-                        if (Blobs[i].shape.GetGlobalBounds().Intersects(Foods[f].shape.GetGlobalBounds()))
+                        double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
+                        Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
+                        Blobs[i].acceleration = randomVector;
+                    }
+                    if (Blobs[i].Health > 0)
+                    {
+                        Blobs[i].Update(window, RenderStates.Default);
+                        for (int f = 0; f < Foods.Count; f++)
                         {
-                            Foods.Remove(Foods[f]);
-                            Blobs[i].Health += 50;
-                            if (new Random().NextDouble() < ReproductionRate / 100)
+                            if (Blobs[i].shape.GetGlobalBounds().Intersects(Foods[f].shape.GetGlobalBounds()))
                             {
-                                Blob newBorn = new Blob(Blobs[i].Size,Blobs[i].shape.FillColor);
-                                if (new Random().NextDouble() < mutationRate / 100)
+                                Foods.Remove(Foods[f]);
+                                Blobs[i].Health += 50;
+                                if (new Random().NextDouble() < ReproductionRate / 100)
                                 {
-                                    newBorn = new Blob();
+                                    Blob newBorn = new Blob(Blobs[i].Size, Blobs[i].shape.FillColor);
+                                    if (new Random().NextDouble() < mutationRate / 100)
+                                    {
+                                        newBorn = new Blob();
+                                    }
+                                    newBorn.shape.Position = Blobs[i].shape.Position;
+                                    newBorn.Speed = 1 / newBorn.Size * 50;
+                                    Blobs.Add(newBorn);
                                 }
-                                newBorn.shape.Position = Blobs[i].shape.Position;
-                                newBorn.Speed = 1/newBorn.Size*50;
-                                Blobs.Add(newBorn);
                             }
                         }
                     }
-                }
-                else
-                {
-                    Foods.Add(new Food(Blobs[i].shape.Position));
-                    Blobs.RemoveAt(i);
+                    else
+                    {
+                        Foods.Add(new Food(Blobs[i].shape.Position));
+                        Blobs.RemoveAt(i);
+                    }
                 }
             }
-
         }
 
         private void draw()

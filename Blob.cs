@@ -23,9 +23,9 @@ namespace ContinuousGeneticEnviroment
         
         public Blob()
         {
-            var R = (byte)new Random().Next(255);
-            var G = (byte)new Random().Next(255);
-            var B = (byte)new Random().Next(255);
+            var R = (byte)new Random().Next(100,255);
+            var G = (byte)new Random().Next(100,255);
+            var B = (byte)new Random().Next(100,255);
             shape.FillColor = new Color(R,G,B,100);
             double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
             Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
