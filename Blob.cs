@@ -18,8 +18,8 @@ namespace ContinuousGeneticEnviroment
         public float Health = 250;
         public bool Alive = true;
 
-        
 
+        public float wanderStrength;
         
         public Blob()
         {
@@ -27,6 +27,7 @@ namespace ContinuousGeneticEnviroment
             var G = (byte)new Random().Next(100,255);
             var B = (byte)new Random().Next(100,255);
             shape.FillColor = new Color(R,G,B,100);
+            wanderStrength = (float)new Random().NextDouble();
             double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
             Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
             acceleration = randomVector;
@@ -36,8 +37,9 @@ namespace ContinuousGeneticEnviroment
             shape.Radius = Size;
             shape.Position = InitialPosition;
         }
-        public Blob(float size,Color color)
+        public Blob(float size,Color color,float wanderstrength)
         {
+            wanderStrength = wanderstrength;
             shape.FillColor = color;
             double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
             Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
@@ -45,7 +47,6 @@ namespace ContinuousGeneticEnviroment
             Size = size;
             Health = new Random().Next(100, 500);
             Speed = 1 / Size * 10;
-
             shape.Radius = Size;
             shape.Position = InitialPosition;
         }
@@ -66,6 +67,12 @@ namespace ContinuousGeneticEnviroment
         }
         public void Update(RenderTarget target, RenderStates states)
         {
+            if (new Random().NextDouble() < wanderStrength)
+            {
+                double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
+                Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
+                acceleration = randomVector;
+            }
             CheckBoundCollision(target, states);
             velocity += acceleration;
             velocity *= 1.5f;
