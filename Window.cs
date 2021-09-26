@@ -35,9 +35,9 @@ namespace ContinuousGeneticEnviroment
         public int InitialCount = 200;
         public float ReproductionRate = 41.2f;
         public float FoodSpawnRate = 20f;
-        public float mutationRate = 10f;
-        public float WanderStrength = .2f;
+        public float mutationRate = 20f;
         public List<Food> Foods = new List<Food>();
+
 
 
         //System variables
@@ -82,12 +82,6 @@ namespace ContinuousGeneticEnviroment
                 }
                 for (int i = 0; i < Blobs.Count; i++)
                 {
-                    if (new Random().NextDouble() < WanderStrength)
-                    {
-                        double random = new Random().NextDouble() * 6.28319f; //generates random angle in radians
-                        Vector2f randomVector = new Vector2f((float)Math.Cos(random), (float)Math.Sin(random));
-                        Blobs[i].acceleration = randomVector;
-                    }
                     if (Blobs[i].Health > 0)
                     {
                         Blobs[i].Update(window, RenderStates.Default);
@@ -99,7 +93,7 @@ namespace ContinuousGeneticEnviroment
                                 Blobs[i].Health += 50;
                                 if (new Random().NextDouble() < ReproductionRate / 100)
                                 {
-                                    Blob newBorn = new Blob(Blobs[i].Size, Blobs[i].shape.FillColor);
+                                    Blob newBorn = new Blob(Blobs[i].Size, Blobs[i].shape.FillColor,Blobs[i].wanderStrength);
                                     if (new Random().NextDouble() < mutationRate / 100)
                                     {
                                         newBorn = new Blob();
@@ -113,7 +107,9 @@ namespace ContinuousGeneticEnviroment
                     }
                     else
                     {
-                        Foods.Add(new Food(Blobs[i].shape.Position));
+                        var DeathFood = new Food(Blobs[i].shape.Position);
+                        DeathFood.shape.FillColor = Blobs[i].shape.FillColor;
+                        Foods.Add(DeathFood);
                         Blobs.RemoveAt(i);
                     }
                 }
